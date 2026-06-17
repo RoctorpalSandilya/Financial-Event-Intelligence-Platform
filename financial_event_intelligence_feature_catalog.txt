@@ -1,0 +1,203 @@
+
+FINANCIAL EVENT INTELLIGENCE PLATFORM - FEATURE CATALOG
+
+=====================================================
+1. FINBERT FEATURES
+=====================================================
+
+Direct Sentiment Features
+- positive_prob
+- negative_prob
+- neutral_prob
+- sentiment_score
+
+Aggregated Sentiment Features
+- sentiment_avg_1d
+- sentiment_avg_7d
+- sentiment_avg_30d
+- sentiment_avg_90d
+- sentiment_std_7d
+- sentiment_std_30d
+
+=====================================================
+2. EVENT FEATURES
+=====================================================
+
+Event Type Features (One-Hot Encoded)
+- earnings_beat
+- earnings_miss
+- guidance_raise
+- guidance_cut
+- acquisition
+- merger
+- buyback
+- product_launch
+- partnership
+- lawsuit
+- investigation
+- ceo_change
+- dividend_increase
+- dividend_cut
+
+Event Quality Features
+- event_confidence
+- event_rarity_score
+
+=====================================================
+3. RAG FEATURES
+=====================================================
+
+Similarity Features
+- top_similarity
+- avg_similarity_top5
+- avg_similarity_top10
+- similar_events_count
+
+Historical Outcome Features (1-Day Horizon)
+- avg_return_1d
+- median_return_1d
+- max_return_1d
+- min_return_1d
+- positive_rate_1d
+
+Historical Outcome Features (5-Day Horizon)
+- avg_return_5d
+- median_return_5d
+- max_return_5d
+- min_return_5d
+- positive_rate_5d
+
+Historical Outcome Features (20-Day Horizon)
+- avg_return_20d
+- median_return_20d
+- positive_rate_20d
+
+=====================================================
+4. COMPANY CONTEXT FEATURES
+=====================================================
+
+Sentiment Context Features
+- sentiment_avg_7d_company
+- sentiment_avg_30d_company
+- sentiment_avg_90d_company
+
+Sentiment Surprise Features
+- sentiment_delta_7d
+- sentiment_delta_30d
+- sentiment_delta_90d
+
+News Intensity Features
+- news_count_7d
+- news_count_30d
+- news_count_90d
+
+Earnings History Features
+- consecutive_beats
+- consecutive_misses
+- earnings_surprise_avg
+
+Event Frequency Features
+- event_frequency_30d
+- event_frequency_90d
+
+Surprise Features
+- surprise_score
+- expectation_gap_score
+
+=====================================================
+5. FINANCIAL REASONING FEATURES (QWEN / DEEPSEEK)
+=====================================================
+
+- growth_potential
+- revenue_impact
+- margin_impact
+- cashflow_impact
+- execution_risk
+- regulatory_risk
+- competitive_advantage
+- institutional_confidence
+- valuation_impact
+- long_term_impact
+- surprise_score_llm
+
+=====================================================
+6. MARKET FEATURES
+=====================================================
+
+Historical Return Features
+- return_1d_before
+- return_5d_before
+- return_20d_before
+
+Volatility Features
+- volatility_5d
+- volatility_20d
+- volatility_60d
+- ATR
+
+Volume Features
+- volume_today
+- avg_volume_20d
+- relative_volume
+
+Trend Features
+- SMA10
+- SMA20
+- SMA50
+- EMA20
+
+Momentum Features
+- RSI
+- MACD
+
+Market Environment Features
+- SP500_return
+- NASDAQ_return
+- VIX_level
+
+Company Fundamental Features
+- market_cap
+- PE_ratio  
+- debt_to_equity
+- current_ratio
+- revenue_growth
+
+=====================================================
+TARGET VARIABLES
+=====================================================
+
+Raw Return Targets
+- return_1d
+- return_5d
+- return_20d
+
+Abnormal Return Targets
+- abnormal_return_1d
+- abnormal_return_5d
+- abnormal_return_20d
+
+Classification Targets
+- outperform_market_1d
+- outperform_market_5d
+- abnormal_return_gt_2pct
+
+=====================================================
+IMPLEMENTATION ROADMAP
+=====================================================
+
+V1:
+- FinBERT Features
+- Event Features
+- Market Features
+
+V2:
+- Add RAG Features
+
+V3:
+- Add Company Context Features
+
+V4:
+- Add Financial Reasoning Features
+
+Estimated Total Feature Count:
+~85-100 Features
