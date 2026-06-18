@@ -24,7 +24,55 @@ def get_market_return(market_ticker, start, end, n_days=1):
             return None
         return (mdf["Close"].iloc[-1] - mdf["Close"].iloc[-(n_days+1)]) / mdf["Close"].iloc[-(n_days+1)]
 
-def get_post_market_return(ticker, date):
+def get_post_market_return(ticker, news_date):
+    target_date = datetime.strptime(news_date, "%Y-%m-%d")
+
+    # Fetch FROM news date + 30 days forward
+    start = news_date
+    end   = (target_date + timedelta(days=30)).strftime("%Y-%m-%d")
+
+    stock = yf.Ticker(ticker)
+    df    = stock.history(start=start, end=end, interval="1d")
+
+    if df.empty or len(df) < 2:
+        print(f"No post-news data for {ticker} after {news_date}")
+        return {}
+
+    close    = df["Close"]
+    features = {"ticker": ticker, "date": news_date}
+
+    def forward_return(n_days):
+        """Return % change from first row to n_days later."""
+        if len(close) < n_days + 1:
+            return None
+        return (close.iloc[n_days] - close.iloc[0]) / close.iloc[0]
+
+    # Raw forward returns
+    features["return_1d_after"]  = safe(forward_return(1))
+    features["return_5d_after"]  = safe(forward_return(5))
+    features["return_20d_after"] = safe(forward_return(20))
+
+    # Market returns over same forward windows
+    def market_forward_return(market_ticker, n_days):
+        mdf = yf.Ticker(market_ticker).history(start=start, end=end)
+        if len(mdf) < n_days + 1:
+            return None
+        return (mdf["Close"].iloc[n_days] - mdf["Close"].iloc[0]) / mdf["Close"].iloc[0]
+
+    # Abnormal returns (stock return minus market return)
+    features["abnormal_return_1d"]  = safe(features["return_1d_after"]  - market_forward_return("^IXIC", 1)  if features["return_1d_after"]  else None)
+    features["abnormal_return_5d"]  = safe(features["return_5d_after"]  - market_forward_return("^IXIC", 5)  if features["return_5d_after"]  else None)
+    features["abnormal_return_20d"] = safe(features["return_20d_after"] - market_forward_return("^IXIC", 20) if features["return_20d_after"] else None)
+
+    # Classification labels
+    features["outperform_1d"]  = int(features["abnormal_return_1d"]  > 0) if features["abnormal_return_1d"]  is not None else None
+    features["outperform_5d"]  = int(features["abnormal_return_5d"]  > 0) if features["abnormal_return_5d"]  is not None else None
+    features["outperform_20d"] = int(features["abnormal_return_20d"] > 0) if features["abnormal_return_20d"] is not None else None
+    features["abnormal_gt_2pct_1d"]  = int(features["abnormal_return_1d"]  > 0.02) if features["abnormal_return_1d"]  is not None else None
+    features["abnormal_gt_2pct_5d"]  = int(features["abnormal_return_5d"]  > 0.02) if features["abnormal_return_5d"]  is not None else None
+    features["abnormal_gt_2pct_20d"] = int(features["abnormal_return_20d"] > 0.02) if features["abnormal_return_20d"] is not None else None
+
+    return features
 
 def get_all_features(ticker: str, date: str) -> dict:
     target_date = datetime.strptime(date, "%Y-%m-%d")
@@ -116,21 +164,23 @@ def get_all_features(ticker: str, date: str) -> dict:
 if __name__ == "__main__":
     conn, cursor = db_models.get_db_connection()
     db_models.create_market_table(cursor)
+    db_models.create_market_table2(cursor)
     cursor.execute("SELECT COUNT(*) FROM news")
     total_rows = cursor.fetchone()[0]
-    for row in range(1, total_rows+1):
-        cursor.execute("SELECT Ticker, Published_date FROM news WHERE id= %s", (row,))
+    for row in range(19500, total_rows+1):
+        cursor.execute("SELECT Company_id, Published_date FROM news WHERE id= %s", (row,))
         result = cursor.fetchone()
         if result is None:
             print(f"No news found for row {row}. Skipping.")
             continue
         ticker, published_date = result
-        date_str = published_date.strftime("%Y-%m-%d") - timedelta(days=1)
-        date_str2= published_date.strftime("%Y-%m-%d") + timedelta(days=1)
-        features = get_all_features(ticker, date_str)
-        features2= get_all_features(ticker, date_str2)
-        if features:
-            db_models.insert_market(cursor, row, ticker, date_str, features)
-            if row % 100 == 0:
-                cursor.commit()
-                print(f"Processed {row} out of {total_rows} rows.")
+        date_before = (published_date - timedelta(days=1)).strftime("%Y-%m-%d")  # pre-news features
+        date_after  = (published_date + timedelta(days=1)).strftime("%Y-%m-%d")  # post-news returns
+
+        features_before = get_all_features(ticker, date_before)
+        features_after  = get_post_market_return(ticker, date_after)
+        db_models.insert_market(cursor, row, ticker, date_before, features_before)
+        db_models.insert_market2(cursor, row, ticker, date_after, features_after)
+        if row % 100 == 0:
+            conn.commit()
+            print(f"Processed {row} out of {total_rows} rows.")

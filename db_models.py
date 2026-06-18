@@ -56,7 +56,7 @@ def create_market_table(cursor):
                        MACD_signal FLOAT,
                        MACD_hist FLOAT,
                        SP500_return FLOAT,
-                       Nasdaq_return FLOAT,
+                       NASDAQ_return FLOAT,
                        VIX_level FLOAT,
                        market_cap FLOAT,
                        PE_ratio FLOAT,
@@ -82,7 +82,10 @@ def create_market_table2(cursor):
                        abnormal_return_20d FLOAT,
                        outperform_market_1d BOOLEAN,
                        outperform_market_5d BOOLEAN,
-                       abnormal_return_gt_2pct BOOLEAN,
+                       outperform_market_20d BOOLEAN,
+                       abnormal_return_gt_2pct_1d BOOLEAN,
+                       abnormal_return_gt_2pct_5d BOOLEAN,
+                       abnormal_return_gt_2pct_20d BOOLEAN,
                        FOREIGN KEY (news_id) REFERENCES news (id) ON DELETE CASCADE
                    )
                    """)
@@ -104,10 +107,10 @@ def insert_market(cursor, news_id, ticker, date, features: dict):
                    INSERT INTO market (news_id, ticker, date, return_1d_before, return_5d_before, return_20d_before,
                                        volatility_5d, volatility_20d, volatility_60d, ATR, volume_today,
                                        avg_volume_20d, relative_volume, SMA10, SMA20, SMA50, EMA20, RSI,
-                                       MACD, MACD_signal, MACD_hist, SP500_return, Nasdaq_return,
+                                       MACD, MACD_signal, MACD_hist, SP500_return, NASDAQ_return,
                                        VIX_level, market_cap, PE_ratio, debt_to_equity,
                                        current_ratio, revenue_growth)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                      """, (news_id, ticker, date, features.get("return_1d_before"), features.get("return_5d_before"), features.get("return_20d_before"),
                              features.get("volatility_5d"), features.get("volatility_20d"), features.get("volatility_60d"), features.get("ATR"), features.get("volume_today"),
                              features.get("avg_volume_20d"), features.get("relative_volume"), features.get("SMA10"), features.get("SMA20"), features.get("SMA50"),
@@ -120,8 +123,8 @@ def insert_market2(cursor, news_id, ticker, date, features: dict):
     cursor.execute("""
                    INSERT INTO market2 (news_id, ticker, date, return_1d, return_5d, return_20d,
                                         abnormal_return_1d, abnormal_return_5d, abnormal_return_20d,
-                                        outperform_market_1d, outperform_market_5d, abnormal_return_gt_2pct)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                        outperform_market_1d, outperform_market_5d, outperform_market_20d, abnormal_return_gt_2pct_1d, abnormal_return_gt_2pct_5d, abnormal_return_gt_2pct_20d)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """, (news_id, ticker, date, features.get("return_1d"), features.get("return_5d"), features.get("return_20d"),
                                 features.get("abnormal_return_1d"), features.get("abnormal_return_5d"), features.get("abnormal_return_20d"),
-                                features.get("outperform_market_1d"), features.get("outperform_market_5d"), features.get("abnormal_return_gt_2pct")))
+                                features.get("outperform_market_1d"), features.get("outperform_market_5d"), features.get("outperform_market_20d"), features.get("abnormal_return_gt_2pct_1d"), features.get("abnormal_return_gt_2pct_5d"), features.get("abnormal_return_gt_2pct_20d")))
