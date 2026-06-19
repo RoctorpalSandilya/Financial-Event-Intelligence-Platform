@@ -167,7 +167,7 @@ if __name__ == "__main__":
     db_models.create_market_table2(cursor)
     cursor.execute("SELECT COUNT(*) FROM news")
     total_rows = cursor.fetchone()[0]
-    for row in range(19500, total_rows+1):
+    for row in range(24700, total_rows+1):
         cursor.execute("SELECT Company_id, Published_date FROM news WHERE id= %s", (row,))
         result = cursor.fetchone()
         if result is None:
