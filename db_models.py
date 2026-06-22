@@ -90,6 +90,29 @@ def create_market_table2(cursor):
                    )
                    """)
 
+def create_event_table(cursor):
+    cursor.execute("""
+                   CREATE TABLE IF NOT EXISTS event (
+                       id BIGSERIAL PRIMARY KEY,
+                       news_id BIGINT NOT NULL,
+                       earnings_beat BOOLEAN,
+                       earnings_miss BOOLEAN,
+                       guidance_raise BOOLEAN,
+                       guidance_cut BOOLEAN,
+                       acquisition BOOLEAN,
+                       merger BOOLEAN,
+                       buyback BOOLEAN,
+                       product_launch BOOLEAN,
+                       partnership BOOLEAN,
+                       lawsuit BOOLEAN,
+                       investigation BOOLEAN,
+                       management_change BOOLEAN,
+                       divident_increase BOOLEAN,
+                       divident_cut BOOLEAN,
+                       FOREIGN KEY (news_id) REFERENCES news (id) ON DELETE CASCADE
+                   )
+                   """)
+
 def insert_news(cursor, company_id, headline, summary, url, published_date):
     cursor.execute("""
                    INSERT INTO news (Company_id, Headline, Summary, Url, Published_date)
@@ -128,3 +151,13 @@ def insert_market2(cursor, news_id, ticker, date, features: dict):
                         """, (news_id, ticker, date, features.get("return_1d"), features.get("return_5d"), features.get("return_20d"),
                                 features.get("abnormal_return_1d"), features.get("abnormal_return_5d"), features.get("abnormal_return_20d"),
                                 features.get("outperform_market_1d"), features.get("outperform_market_5d"), features.get("outperform_market_20d"), features.get("abnormal_return_gt_2pct_1d"), features.get("abnormal_return_gt_2pct_5d"), features.get("abnormal_return_gt_2pct_20d")))
+    
+def insert_event(cursor, news_id, events: dict):
+    cursor.execute("""
+                   INSERT INTO event (news_id, earnings_beat, earnings_miss, guidance_raise, guidance_cut,
+                                      acquisition, merger, buyback, product_launch, partnership,
+                                      lawsuit, investigation, management_change, divident_increase, divident_cut)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        """, (news_id, events.get("earnings_beat"), events.get("earnings_miss"), events.get("guidance_raise"), events.get("guidance_cut"),
+                                events.get("acquisition"), events.get("merger"), events.get("buyback"), events.get("product_launch"), events.get("partnership"),
+                                events.get("lawsuit"), events.get("investigation"), events.get("management_change"), events.get("divident_increase"), events.get("divident_cut")))
