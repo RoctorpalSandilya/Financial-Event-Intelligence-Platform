@@ -72,7 +72,7 @@ if __name__ == "__main__":
         company_id = result[0]
         summary = result[1]
         events = extract_events_from_news(summary)
-        db_models.insert_events(cursor, row, events)
+        db_models.insert_event(cursor, row, events)
         if row % 100 == 0:            
             print(f"Processed {row} out of {total_rows} news articles...")
             conn.commit()

@@ -107,8 +107,8 @@ def create_event_table(cursor):
                        lawsuit BOOLEAN,
                        investigation BOOLEAN,
                        management_change BOOLEAN,
-                       divident_increase BOOLEAN,
-                       divident_cut BOOLEAN,
+                       dividend_increase BOOLEAN,
+                       dividend_cut BOOLEAN,
                        FOREIGN KEY (news_id) REFERENCES news (id) ON DELETE CASCADE
                    )
                    """)
@@ -156,8 +156,8 @@ def insert_event(cursor, news_id, events: dict):
     cursor.execute("""
                    INSERT INTO event (news_id, earnings_beat, earnings_miss, guidance_raise, guidance_cut,
                                       acquisition, merger, buyback, product_launch, partnership,
-                                      lawsuit, investigation, management_change, divident_increase, divident_cut)
+                                      lawsuit, investigation, management_change, dividend_increase, dividend_cut)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                        """, (news_id, events.get("earnings_beat"), events.get("earnings_miss"), events.get("guidance_raise"), events.get("guidance_cut"),
-                                events.get("acquisition"), events.get("merger"), events.get("buyback"), events.get("product_launch"), events.get("partnership"),
-                                events.get("lawsuit"), events.get("investigation"), events.get("management_change"), events.get("divident_increase"), events.get("divident_cut")))
+                        """, (news_id, events.earnings_beat, events.earnings_miss, events.guidance_raise, events.guidance_cut,
+                                events.acquisition, events.merger, events.buyback, events.product_launch, events.partnership,
+                                events.lawsuit, events.investigation, events.management_change, events.dividend_increase, events.dividend_cut))
