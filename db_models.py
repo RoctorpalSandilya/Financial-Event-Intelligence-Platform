@@ -112,6 +112,16 @@ def create_event_table(cursor):
                        FOREIGN KEY (news_id) REFERENCES news (id) ON DELETE CASCADE
                    )
                    """)
+    
+def create_embeddings_table(cursor):
+    cursor.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS news_embeddings (
+            id        BIGSERIAL PRIMARY KEY,
+            news_id   BIGINT NOT NULL REFERENCES news(id) ON DELETE CASCADE,
+            embedding vector(768)
+        );
+    """)
 
 def insert_news(cursor, company_id, headline, summary, url, published_date):
     cursor.execute("""
@@ -161,3 +171,21 @@ def insert_event(cursor, news_id, events: dict):
                         """, (news_id, events.earnings_beat, events.earnings_miss, events.guidance_raise, events.guidance_cut,
                                 events.acquisition, events.merger, events.buyback, events.product_launch, events.partnership,
                                 events.lawsuit, events.investigation, events.management_change, events.dividend_increase, events.dividend_cut))
+    
+def insert_embedding(cursor, news_id, embedding):
+    cursor.execute("""
+                   INSERT INTO news_embeddings (news_id, embedding)
+                   VALUES (%s, %s)
+                   """, (news_id, embedding))
+    
+def retrieve_similar_news(cursor, query_embedding, top_k=5):
+    cursor.execute("""
+        SELECT n.id, 1 - (ne.embedding <=> %s::vector) AS similarity
+        FROM news_embeddings ne
+        JOIN news n ON ne.news_id = n.id
+        ORDER BY ne.embedding <=> %s::vector
+        LIMIT %s
+    """, (query_embedding, query_embedding, top_k))
+
+    rows = cursor.fetchall()
+    return [{"news_id": row[0], "similarity": row[1]} for row in rows]
