@@ -7,6 +7,21 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def get_current_news(ticker):
+    api_key= os.getenv("FINNHUB_API_KEY")
+    if not api_key:
+        raise ValueError("Finnhub API key not found in environment variables.")
+    client = finnhub.Client(api_key=api_key)
+    try:
+        news = client.company_news(ticker, date.today(), date.today() - timedelta(days=7))
+    except Exception as e:
+        print(f"Error fetching current news for {ticker}: {e}")
+        return "API error"
+    if not news:
+        print(f"No current news found for {ticker}.")
+        return []
+    return news
+
 def get_news(ticker, on_date):
     api_key= os.getenv("FINNHUB_API_KEY")
     if not api_key:
