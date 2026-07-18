@@ -123,6 +123,16 @@ def create_embeddings_table(cursor):
         );
     """)
 
+def create_user_table(cursor):
+    cursor.execute("""
+                   CREATE TABLE IF NOT EXISTS users (
+                       id BIGSERIAL PRIMARY KEY,
+                       username VARCHAR(255) UNIQUE NOT NULL,
+                       password_hash TEXT NOT NULL,
+                       email VARCHAR(255) UNIQUE NOT NULL
+                   )
+                   """)
+
 def insert_news(cursor, company_id, headline, summary, url, published_date):
     cursor.execute("""
                    INSERT INTO news (Company_id, Headline, Summary, Url, Published_date)
@@ -177,6 +187,12 @@ def insert_embedding(cursor, news_id, embedding):
                    INSERT INTO news_embeddings (news_id, embedding)
                    VALUES (%s, %s)
                    """, (news_id, embedding))
+    
+def insert_user(cursor, username, password_hash):
+    cursor.execute("""
+                   INSERT INTO users (username, password_hash)
+                   VALUES (%s, %s)
+                   """, (username, password_hash))
     
 def retrieve_similar_news(cursor, query_embedding, top_k=5):
     cursor.execute("""

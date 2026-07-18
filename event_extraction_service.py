@@ -6,7 +6,7 @@ import db_models
 import time
 
 llm = ChatOllama(
-    model       = "deepseek-r1:7b",
+    model       = "qwen2.5:3b",
     temperature = 0.1
 )
 
