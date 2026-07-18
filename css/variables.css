@@ -1,0 +1,89 @@
+/* ============================================================
+   FinVision — css/variables.css
+   Global design tokens, color palette, and styling properties.
+   ============================================================ */
+
+:root {
+  /* Color Palette (Bloomberg Terminal meets Futuristic Cyberpunk) */
+  --bg-primary: #040810;     /* Deep black-navy */
+  --bg-secondary: #0a0f1d;   /* Card background / panel background */
+  --bg-tertiary: #12182c;    /* Highlights / lighter surfaces */
+  
+  --accent-orange: #FF6B00;  /* Bloomberg orange */
+  --accent-cyan: #00D4FF;    /* Electric cyan */
+  --accent-blue: #0A66C2;    /* Sleek link / primary blue */
+  
+  /* Gain / Loss States */
+  --color-gain: #00FF88;     /* Neon gain green */
+  --color-loss: #FF3366;     /* Neon loss pink-red */
+  --color-neutral: #FFCC00;  /* Cyber yellow */
+  
+  /* Text Colors */
+  --text-primary: #ffffff;   /* Pure white for headers/active text */
+  --text-secondary: #b3c0d8; /* Dimmed silver-blue for labels/body */
+  --text-dim: #64748b;       /* Muted slate for helper text/borders */
+  --text-dark: #020617;      /* Dark slate for high contrast */
+  
+  /* Borders and Gradients */
+  --border-glow: rgba(0, 212, 255, 0.15);
+  --border-glass: rgba(255, 255, 255, 0.05);
+  --border-glass-hover: rgba(0, 212, 255, 0.25);
+  
+  --gradient-neon: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+  --gradient-gain: linear-gradient(135deg, #00FF88, #00B862);
+  --gradient-loss: linear-gradient(135deg, #FF3366, #C20030);
+  --gradient-text: linear-gradient(180deg, #ffffff 30%, var(--accent-cyan) 100%);
+  --gradient-orange-text: linear-gradient(180deg, #ffffff 30%, var(--accent-orange) 100%);
+  
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(10, 15, 29, 0.65);
+  --glass-blur: 24px;
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  
+  /* Typography Scale */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 28px;
+  
+  /* Animation Timings */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Depth Layering */
+  --z-background: -10;
+  --z-base: 1;
+  --z-nav: 100;
+  --z-overlay: 200;
+  --z-toast: 9999;
+}
+
+/* Base Utility Classes */
+.text-gain {
+  color: var(--color-gain) !important;
+}
+
+.text-loss {
+  color: var(--color-loss) !important;
+}
+
+.text-neutral {
+  color: var(--color-neutral) !important;
+}
+
+.font-mono {
+  font-family: var(--font-mono) !important;
+}
+
+.glow-orange {
+  filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
+}
+
+.glow-cyan {
+  filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
+}

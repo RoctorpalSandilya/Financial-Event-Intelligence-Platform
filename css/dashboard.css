@@ -1,0 +1,679 @@
+/* ============================================================
+   FinVision — css/dashboard.css
+   Dashboard styles: top navigation, search, welcome state,
+   candlestick hero, metrics grid, canvas chart, AI, and news.
+   ============================================================ */
+
+/* Top Navigation Bar */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(4, 8, 16, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: var(--z-nav);
+}
+
+.nav-left .nav-logo {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.nav-center {
+  flex: 1;
+  max-width: 500px;
+  margin: 0 32px;
+}
+
+.search-container {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.live-clock {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent-cyan);
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.15);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.5px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Dashboard Content Wrapper */
+.dashboard-content {
+  margin-top: 88px;
+  padding: 0 24px 80px;
+  min-height: calc(100vh - 88px);
+}
+
+/* Welcome Landing State */
+.welcome-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 180px);
+  text-align: center;
+}
+
+.welcome-content {
+  max-width: 800px;
+  width: 100%;
+}
+
+.welcome-title {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  margin-bottom: 12px;
+}
+
+.welcome-subtitle {
+  color: var(--text-secondary);
+  font-size: 16px;
+  margin-bottom: 32px;
+}
+
+.hero-candlesticks {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  margin: 0 auto 40px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+/* Hero Candlestick Elements */
+.hero-candle {
+  position: absolute;
+  width: 2px;
+  background: currentColor;
+  transform-origin: bottom;
+  animation: candlestick-grow 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.hero-candle.candle-green {
+  color: var(--color-gain);
+}
+
+.hero-candle.candle-red {
+  color: var(--color-loss);
+}
+
+.hero-candle::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  background: currentColor;
+  height: var(--body-height);
+  top: var(--wick-top);
+  box-shadow: 0 0 12px currentColor;
+  border-radius: 1px;
+}
+
+.popular-tickers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.popular-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.popular-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.popular-btn:hover {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: var(--accent-cyan);
+  color: var(--text-primary);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+/* Stock loaded dashboard data */
+.stock-data {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Company Header Info */
+.stock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  margin-bottom: 24px;
+}
+
+.company-info h2 {
+  font-size: 26px;
+  color: var(--text-primary);
+}
+
+.exchange-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-left: 8px;
+}
+
+.price-info {
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.current-price {
+  font-family: var(--font-mono);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.price-change {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.price-change.up {
+  color: var(--color-gain);
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+.price-change.down {
+  color: var(--color-loss);
+  text-shadow: 0 0 10px rgba(255, 51, 102, 0.2);
+}
+
+/* Key Metrics grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.metric-card {
+  padding: 16px;
+  text-align: center;
+}
+
+.metric-label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.metric-value {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 6px;
+  color: var(--text-primary);
+}
+
+/* Main Chart Window */
+.chart-section {
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.chart-header h3 {
+  font-size: 16px;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.chart-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 350px;
+}
+
+/* News and Analysis Layout */
+.analysis-news-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.ai-analysis, .news-feed {
+  padding: 24px;
+}
+
+.ai-analysis h3, .news-feed h3 {
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* AI Predictions styling */
+.prediction-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.prediction-badge.bullish {
+  background: rgba(0, 255, 136, 0.08);
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  color: var(--color-gain);
+}
+
+.prediction-badge.bearish {
+  background: rgba(255, 51, 102, 0.08);
+  border: 1px solid rgba(255, 51, 102, 0.2);
+  color: var(--color-loss);
+}
+
+.prediction-badge.neutral {
+  background: rgba(255, 204, 0, 0.08);
+  border: 1px solid rgba(255, 204, 0, 0.2);
+  color: var(--color-neutral);
+}
+
+.prediction-badge .arrow {
+  display: inline-block;
+}
+
+.prediction-summary {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.confidence-section {
+  margin-bottom: 20px;
+}
+
+.confidence-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.confidence-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-orange), var(--accent-cyan));
+  width: 0%;
+  border-radius: 3px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 8px var(--accent-cyan);
+}
+
+.prediction-targets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.target-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  text-align: center;
+}
+
+.target-label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.target-val {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-cyan);
+}
+
+.prediction-factors {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 16px;
+}
+
+.factors-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.factor-item {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.factor-icon {
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.factor-details {
+  flex: 1;
+}
+
+.factor-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.factor-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* News cards feed */
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.news-card {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  cursor: pointer;
+  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.news-card:hover {
+  background: rgba(0, 212, 255, 0.03);
+  border-color: rgba(0, 212, 255, 0.15);
+  transform: translateX(4px);
+}
+
+.news-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.news-source {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-orange);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.news-sentiment {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.news-sentiment.positive {
+  background: rgba(0, 255, 136, 0.08);
+  color: var(--color-gain);
+}
+
+.news-sentiment.negative {
+  background: rgba(255, 51, 102, 0.08);
+  color: var(--color-loss);
+}
+
+.news-sentiment.neutral {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+}
+
+.news-title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.news-time {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* Live Scrolling Ticker Strip */
+.ticker-strip {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 38px;
+  background: #02050a;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: var(--z-nav);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.ticker-content {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: scroll-ticker 35s linear infinite;
+  padding-left: 100%; /* Start scrolling from off-screen */
+}
+
+/* Pause scroll on hover */
+.ticker-strip:hover .ticker-content {
+  animation-play-state: paused;
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.ticker-item:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.ticker-symbol {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ticker-price {
+  color: var(--text-secondary);
+}
+
+.ticker-item.ticker-up .ticker-price {
+  color: var(--color-gain);
+}
+
+.ticker-item.ticker-down .ticker-price {
+  color: var(--color-loss);
+}
+
+.ticker-change {
+  font-weight: 500;
+}
+
+.ticker-item.ticker-up .ticker-change {
+  color: var(--color-gain);
+}
+
+.ticker-item.ticker-down .ticker-change {
+  color: var(--color-loss);
+}
+
+/* Flash flicker highlight animation when stock updates */
+.ticker-item.ticker-flash {
+  animation: data-pulse 0.4s ease-out;
+}
+
+/* Loading Overlay Overlay Screen */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(4, 8, 16, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: var(--z-overlay);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.loading-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.loading-logo {
+  font-size: 54px;
+  color: var(--accent-cyan);
+  animation: spin 1.5s linear infinite, pulse-glow 2s infinite;
+  margin-bottom: 20px;
+}
+
+.loading-text {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}

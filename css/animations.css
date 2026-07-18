@@ -1,0 +1,245 @@
+/* ============================================================
+   FinVision — css/animations.css
+   Global keyframe animations, transition utilities, form-shaking,
+   staggered delays, and responsive layout adjustments.
+   ============================================================ */
+
+/* ── Keyframe Animations ── */
+
+/* Simple Fade In */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Slide Up and Fade In */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide Down and Fade In */
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide Left and Fade In */
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide Right and Fade In (for News list) */
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Glowing Pulsing Effect */
+@keyframes pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.4)) drop-shadow(0 0 15px rgba(0, 229, 255, 0.2));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(0, 229, 255, 0.8)) drop-shadow(0 0 35px rgba(0, 229, 255, 0.4));
+  }
+}
+
+/* Rotating card border gradients */
+@keyframes rotate-border {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading Shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Infinite Scrolling Ticker (looping half width) */
+@keyframes scroll-ticker {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Candlestick Entry Animation */
+@keyframes candlestick-grow {
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Falling Dollars and Coins (Auth background) */
+@keyframes cash-fall {
+  0% {
+    transform: translateY(-10vh) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(110vh) translateX(100px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Form Shaking on input errors */
+@keyframes form-shake {
+  0%, 100% { transform: translateX(0); }
+  15%, 45%, 75% { transform: translateX(-8px); }
+  30%, 60%, 90% { transform: translateX(8px); }
+}
+
+.form-shake {
+  animation: form-shake 0.45s ease-in-out;
+}
+
+/* Flicker pulse (for live ticker items updating) */
+@keyframes data-pulse {
+  0% {
+    background: rgba(0, 212, 255, 0.35);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+  }
+  100% {
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+/* Spin animation for spinner */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ── Staggered Entrance Utility Classes ── */
+.stagger-1 { animation: fadeInUp 0.4s ease-out 0.05s both; }
+.stagger-2 { animation: fadeInUp 0.4s ease-out 0.10s both; }
+.stagger-3 { animation: fadeInUp 0.4s ease-out 0.15s both; }
+.stagger-4 { animation: fadeInUp 0.4s ease-out 0.20s both; }
+.stagger-5 { animation: fadeInUp 0.4s ease-out 0.25s both; }
+.stagger-6 { animation: fadeInUp 0.4s ease-out 0.30s both; }
+
+/* ── Responsive Media Queries ── */
+
+@media (max-width: 1024px) {
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .analysis-news-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-nav {
+    padding: 0 16px;
+  }
+  
+  .nav-center {
+    display: none; /* Hide top search bar, use search widget if needed or toggle */
+  }
+  
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .welcome-title {
+    font-size: 28px;
+  }
+  
+  .hero-candlesticks {
+    height: 180px;
+  }
+  
+  .stock-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+  }
+  
+  .price-info {
+    text-align: left;
+    flex-direction: row;
+    align-items: baseline;
+  }
+  
+  .toast-container {
+    left: 16px;
+    right: 16px;
+    bottom: 24px;
+  }
+  
+  .toast {
+    min-width: calc(100vw - 32px);
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 32px 20px;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .chart-controls {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  .prediction-targets {
+    grid-template-columns: 1fr;
+  }
+}

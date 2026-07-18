@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinVision — AI-Powered Financial Intelligence Platform</title>
+  <meta name="description" content="Bloomberg-inspired futuristic stock behavior forecasting, financial news analytics, and AI predictions.">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/animations.css">
+  
+  <!-- Favicon (Orange Diamond) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,10 90,50 50,90 10,50' fill='%23FF6B00'/%3E%3C/svg%3E">
+</head>
+<body>
+
+  <!-- Fullscreen Particle Background -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Loading Screen Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-logo">◆</div>
+    <div class="loading-text">Analyzing Market Matrix...</div>
+  </div>
+
+  <!-- Global Toast Alert Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Bottom Scrolling Ticker Strip -->
+  <div id="ticker-strip" class="ticker-strip">
+    <div id="ticker-content" class="ticker-content">
+      <!-- Dynamically populated by JS -->
+    </div>
+  </div>
+
+  <!-- ==========================================
+       1. LOGIN VIEW
+       ========================================== -->
+  <div id="login-view" class="view auth-view active">
+    <!-- Floating Cash / Dollar Symbols background -->
+    <div class="floating-elements">
+      <span class="float-item" style="left: 8%; animation-delay: 0s; animation-duration: 9s;">$</span>
+      <span class="float-item" style="left: 22%; animation-delay: 2s; animation-duration: 11s;">💵</span>
+      <span class="float-item" style="left: 38%; animation-delay: 0.5s; animation-duration: 8s;">$</span>
+      <span class="float-item" style="left: 55%; animation-delay: 4s; animation-duration: 12s;">💰</span>
+      <span class="float-item" style="left: 72%; animation-delay: 1.5s; animation-duration: 10s;">$</span>
+      <span class="float-item" style="left: 88%; animation-delay: 3s; animation-duration: 7s;">📈</span>
+    </div>
+
+    <div class="auth-container">
+      <div class="auth-card glass-card">
+        <div class="auth-logo">
+          <span class="logo-icon">◆</span>
+          <h1>FinVision</h1>
+          <p class="tagline">FINANCIAL INTELLIGENCE GATEWAY</p>
+        </div>
+        
+        <form id="login-form">
+          <div class="form-group stagger-1">
+            <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); display: block; margin-bottom: 6px;" for="login-email">Secure Identity / Email</label>
+            <input type="email" id="login-email" class="auth-input" placeholder="name@domain.com" required autocomplete="email">
+            <div class="input-line"></div>
+          </div>
+          
+          <div class="form-group stagger-2">
+            <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); display: block; margin-bottom: 6px;" for="login-password">Access Cipher / Password</label>
+            <input type="password" id="login-password" class="auth-input" placeholder="••••••••" required autocomplete="current-password">
+            <div class="input-line"></div>
+          </div>
+          
+          <div class="form-group stagger-3" style="margin-top: 32px;">
+            <button type="submit" id="login-submit-btn" class="primary-btn">
+              <span>ESTABLISH SESSION</span>
+            </button>
+          </div>
+        </form>
+        
+        <div class="auth-links stagger-4">
+          <a href="#signup" class="auth-link">REGISTER TERMINAL</a>
+          <span class="auth-divider">/</span>
+          <a href="#change-password" class="auth-link">RESET PASSWORD</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       2. SIGNUP VIEW
+       ========================================== -->
+  <div id="signup-view" class="view auth-view">
+    <div class="floating-elements">
+      <span class="float-item" style="left: 12%; animation-delay: 1s; animation-duration: 10s;">$</span>
+      <span class="float-item" style="left: 28%; animation-delay: 3s; animation-duration: 8s;">📊</span>
+      <span class="float-item" style="left: 45%; animation-delay: 0s; animation-duration: 11s;">$</span>
+      <span class="float-item" style="left: 62%; animation-delay: 5s; animation-duration: 9s;">💵</span>
+      <span class="float-item" style="left: 78%; animation-delay: 2s; animation-duration: 12s;">💎</span>
+    </div>
+
+    <div class="auth-container">
+      <div class="auth-card glass-card">
+        <div class="auth-logo">
+          <span class="logo-icon">◆</span>
+          <h1>FinVision</h1>
+          <p class="tagline">REGISTER NEW INTELLIGENCE NODES</p>
+        </div>
+        
+        <form id="signup-form">
+          <div class="form-group stagger-1">
+            <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); display: block; margin-bottom: 6px;" for="signup-name">Operator Full Name</label>
+            <input type="text" id="signup-name" class="auth-input" placeholder="Alex Mercer" required autocomplete="name">
+            <div class="input-line"></div>
+          </div>
+          
+          <div class="form-group stagger-2">
+            <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); display: block; margin-bottom: 6px;" for="signup-email">Terminal Email Node</label>
+            <input type="email" id="signup-email" class="auth-input" placeholder="alex@mercer.com" required autocomplete="email">
+            <div class="input-line"></div>
+          </div>
+          
+          <div class="form-group stagger-3">
+            <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); display: block; margin-bottom: 6px;" for="signup-password">Secure Cipher</label>
+            <input type="password" id="signup-password" class="auth-input" placeholder="Create strong cipher" required autocomplete="new-password">
+            <div class="input-line"></div>
+            <!-- Strength Bar -->
+            <div class="password-strength">
+              <div id="strength-bar" class="strength-bar"></div>
+            </div>
+            <div id="strength-text" class="strength-text"></div>
+          </div>
+          
+          <div class="form-group stagger-4">
+            <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); display: block; margin-bottom: 6px;" for="signup-confirm">Re-verify Cipher</label>
+            <input type="password" id="signup-confirm" class="auth-input" placeholder="Verify cipher" required autocomplete="new-password">
+            <div class="input-line"></div>
+          </div>
+          
+          <div class="form-group stagger-5" style="margin-top: 32px;">
+            <button type="submit" id="signup-submit-btn" class="primary-btn">
+              <span>ACTIVATE TERMINAL</span>
+            </button>
+          </div>
+        </form>
+        
+        <div class="auth-links stagger-6">
+          <a href="#login" class="auth-link">RETURN TO AUTHORIZATION</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       3. CHANGE PASSWORD VIEW
+       ========================================== -->
+  <div id="change-password-view" class="view auth-view">
+    <div class="floating-elements">
+      <span class="float-item" style="left: 15%; animation-delay: 2s; animation-duration: 9s;">🔒</span>
+      <span class="float-item" style="left: 48%; animation-delay: 0.5s; animation-duration: 10s;">$</span>
+      <span class="float-item" style="left: 80%; animation-delay: 4s; animation-duration: 11s;">🔐</span>
+    </div>
+
+    <div class="auth-container">
+      <div class="auth-card glass-card">
+        <div class="auth-logo">
+          <span class="logo-icon">◆</span>
+          <h1>FinVision</h1>
+          <p class="tagline">CIPHER RE-KEY SEQUENCE</p>
+        </div>
+        
+        <form id="change-password-form">
+          <div class="form-group stagger-1">
+            <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); display: block; margin-bottom: 6px;" for="current-password">Current Cipher</label>
+            <input type="password" id="current-password" class="auth-input" placeholder="Enter current password" required autocomplete="current-password">
+            <div class="input-line"></div>
+          </div>
+          
+          <div class="form-group stagger-2">
+            <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); display: block; margin-bottom: 6px;" for="new-password">New Cipher</label>
+            <input type="password" id="new-password" class="auth-input" placeholder="Enter new password" required autocomplete="new-password">
+            <div class="input-line"></div>
+          </div>
+          
+          <div class="form-group stagger-3">
+            <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); display: block; margin-bottom: 6px;" for="confirm-new-password">Verify New Cipher</label>
+            <input type="password" id="confirm-new-password" class="auth-input" placeholder="Verify new password" required autocomplete="new-password">
+            <div class="input-line"></div>
+          </div>
+          
+          <div class="form-group stagger-4" style="margin-top: 32px;">
+            <button type="submit" id="change-password-submit-btn" class="primary-btn">
+              <span>COMMIT RE-KEY</span>
+            </button>
+          </div>
+        </form>
+        
+        <div class="auth-links stagger-5">
+          <a href="#login" class="auth-link">LOGIN TERMINAL</a>
+          <span class="auth-divider">/</span>
+          <a href="#dashboard" class="auth-link">RETURN TO DASHBOARD</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       4. DASHBOARD VIEW
+       ========================================== -->
+  <div id="dashboard-view" class="view">
+    <!-- Top Nav Header -->
+    <nav class="top-nav">
+      <div class="nav-left">
+        <span class="nav-logo">◆ FinVision</span>
+      </div>
+      
+      <div class="nav-center">
+        <div class="search-container">
+          <div class="search-icon">⌕</div>
+          <input type="text" id="search-input" class="search-input" placeholder="Query Stock Matrix (e.g. AAPL, TSLA, NVDA)" autocomplete="off">
+          <div id="search-suggestions" class="search-suggestions"></div>
+        </div>
+      </div>
+      
+      <div class="nav-right">
+        <div id="live-clock" class="live-clock">00:00:00 EST • Jul 15, 2026</div>
+        <div class="user-info">
+          <div id="user-avatar" class="user-avatar">DU</div>
+          <span id="user-name" class="user-name">Demo Operator</span>
+        </div>
+        <button id="logout-btn" class="nav-btn">EXIT TERMINAL</button>
+      </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-content">
+      
+      <!-- Welcome Landing State (no stock selected) -->
+      <div id="welcome-state" class="welcome-state">
+        <div class="welcome-content">
+          <h2 class="welcome-title">FINANCIAL <span class="gradient-text">FORECASTING MATRIX</span></h2>
+          <p class="welcome-subtitle">Input ticker symbol to extract market sentiment, history trends, and future AI projections.</p>
+          
+          <!-- Animated Candlestick Background Widget -->
+          <div id="hero-candlesticks" class="hero-candlesticks"></div>
+          
+          <!-- Popular Ticker Shortcuts -->
+          <div class="popular-tickers">
+            <span class="popular-label">Active Nodes:</span>
+            <button class="popular-btn" data-ticker="AAPL">AAPL</button>
+            <button class="popular-btn" data-ticker="GOOGL">GOOGL</button>
+            <button class="popular-btn" data-ticker="MSFT">MSFT</button>
+            <button class="popular-btn" data-ticker="TSLA">TSLA</button>
+            <button class="popular-btn" data-ticker="AMZN">AMZN</button>
+            <button class="popular-btn" data-ticker="NVDA">NVDA</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loaded Stock Information Section -->
+      <div id="stock-data" class="stock-data" style="display: none;">
+        
+        <!-- Company Metadata Header -->
+        <div class="stock-header glass-card">
+          <div class="company-info">
+            <h2 id="company-name" style="display: inline-block; vertical-align: middle;">Company Name</h2>
+            <span id="company-ticker" class="ticker-badge" style="margin-left: 12px; vertical-align: middle;">TICKER</span>
+            <span id="company-exchange" class="exchange-label" style="vertical-align: middle;">EXCHANGE</span>
+          </div>
+          
+          <div class="price-info">
+            <span id="current-price" class="current-price">$0.00</span>
+            <span id="price-change" class="price-change">+0.00 (+0.00%)</span>
+          </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card glass-card stagger-1">
+            <span class="metric-label">Open Val</span>
+            <span id="metric-open-val" class="metric-value">—</span>
+          </div>
+          <div class="metric-card glass-card stagger-2">
+            <span class="metric-label">Day High</span>
+            <span id="metric-high-val" class="metric-value">—</span>
+          </div>
+          <div class="metric-card glass-card stagger-3">
+            <span class="metric-label">Day Low</span>
+            <span id="metric-low-val" class="metric-value">—</span>
+          </div>
+          <div class="metric-card glass-card stagger-4">
+            <span class="metric-label">Volume</span>
+            <span id="metric-volume-val" class="metric-value">—</span>
+          </div>
+          <div class="metric-card glass-card stagger-5">
+            <span class="metric-label">Market Capitalization</span>
+            <span id="metric-mktcap-val" class="metric-value">—</span>
+          </div>
+          <div class="metric-card glass-card stagger-6">
+            <span class="metric-label">Price/Earnings Ratio</span>
+            <span id="metric-pe-val" class="metric-value">—</span>
+          </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="chart-section glass-card">
+          <div class="chart-header">
+            <h3>Price Vector History</h3>
+            <div class="chart-controls">
+              <button class="chart-btn" data-range="1W">1W</button>
+              <button class="chart-btn" data-range="1M">1M</button>
+              <button class="chart-btn active" data-range="3M">3M</button>
+              <button class="chart-btn" data-range="1Y">1Y</button>
+              <button class="chart-btn" data-range="5Y">5Y</button>
+            </div>
+          </div>
+          
+          <div class="chart-wrapper">
+            <canvas id="price-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- AI Forecast & News Feed -->
+        <div class="analysis-news-grid">
+          
+          <!-- AI Predictions widget -->
+          <div class="ai-analysis glass-card">
+            <h3>🤖 Predictive Engine Forecast</h3>
+            <div id="ai-prediction">
+              <!-- Dynamically populated by JS -->
+            </div>
+          </div>
+
+          <!-- Financial News Feed -->
+          <div class="news-feed glass-card">
+            <h3>📰 Associated Feed Streams</h3>
+            <div id="news-list" class="news-list">
+              <!-- Dynamically populated by JS -->
+            </div>
+          </div>
+          
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Import JS Logic Modules (Dependencies Order Critical) -->
+  <script src="js/utils.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
