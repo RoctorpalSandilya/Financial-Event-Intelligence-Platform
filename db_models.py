@@ -4,6 +4,16 @@ def get_db_connection():
     conn, cursor = create_db_if_not_exists()
     return conn, cursor
 
+def create_blacklist_table(cursor):
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS token_blacklist (
+            id SERIAL PRIMARY KEY,
+            token TEXT UNIQUE NOT NULL,
+            expires_at TIMESTAMP NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
 def create_news_table(cursor):
     cursor.execute("""
                    CREATE TABLE IF NOT EXISTS news (
@@ -193,6 +203,12 @@ def insert_user(cursor, username, password_hash):
                    INSERT INTO users (username, password_hash)
                    VALUES (%s, %s)
                    """, (username, password_hash))
+    
+def insert_blacklist_token(cursor, token, expires_at):
+    cursor.execute("""
+                   INSERT INTO token_blacklist (token, expires_at)
+                   VALUES (%s, %s)
+                   """, (token, expires_at))
     
 def retrieve_similar_news(cursor, query_embedding, top_k=5):
     cursor.execute("""

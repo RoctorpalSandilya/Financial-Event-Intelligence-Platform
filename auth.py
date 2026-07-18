@@ -1,36 +1,60 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.responses import JSONResponse
-from langchain_protocol import Annotated
+from typing import Annotated
 from pydantic import BaseModel, EmailStr, Field
 import os
 from dotenv import load_dotenv
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
-from db_models import get_db_connection, create_user_table, insert_user
+from db_models import get_db_connection, create_user_table, insert_user, create_blacklist_table, insert_blacklist_token
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
+
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
-TOKEN_EXPIRE_MINUTES = int(os.getenv("TOKEN_EXPIRE_MINUTES"))
-bcrypt_salt = int(os.getenv("BCRYPT_SALT"))
+TOKEN_EXPIRE_MINUTES = int(os.getenv("TOKEN_EXPIRE_MINUTES", 30))
 
-router= APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(prefix="/auth", tags=["auth"])
+
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_bearer= OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/login")
+
+def blacklist_token(token: str, expires_at: datetime):
+    conn, cursor = get_db_connection()
+    create_blacklist_table(cursor)
+    try:
+        insert_blacklist_token(cursor, token, expires_at)
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def is_token_blacklisted(token: str) -> bool:
+    conn, cursor = get_db_connection()
+    try:
+        cursor.execute("SELECT 1 FROM token_blacklist WHERE token = %s AND expires_at > NOW()", (token,))
+        return cursor.fetchone() is not None
+    finally:
+        cursor.close()
+        conn.close()
 
 def hash_password(password: str) -> str:
     return bcrypt_context.hash(password)
 
-def create_access_token(username:str, expires_delta: timedelta = None):
-    encode= {"sub": username}
-    if expires_delta:
-        expire= datetime.now() + expires_delta
-        encode["exp"] = expire
+
+def create_access_token(username: str, expires_delta: timedelta = None):
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=TOKEN_EXPIRE_MINUTES))
+    encode = {"sub": username, "exp": expire}
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def get_current_user(token: str = Annotated[str, Depends(oauth2_bearer)]):
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
+    if is_token_blacklisted(token):
+        raise HTTPException(status_code=401, detail="Token has been revoked")
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
@@ -40,18 +64,20 @@ def get_current_user(token: str = Annotated[str, Depends(oauth2_bearer)]):
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+
 class CreateUserRequest(BaseModel):
-    username: Annotated[str, Field(...)]    
-    password: Annotated[str, Field(...)]
-    email: EmailStr = Annotated[str, Field(...)]
+    username: str = Field(...)
+    password: str = Field(...)
+    email: EmailStr = Field(...)
 
 class LoginRequest(BaseModel):
-    username: Annotated[str, Field(...)]    
-    password: Annotated[str, Field(...)]
+    username: str = Field(...)
+    password: str = Field(...)
 
 class Token(BaseModel):
     access_token: str
     token_type: str
+
 
 @router.post("/login", response_model=Token)
 def login(user: LoginRequest):
@@ -60,26 +86,21 @@ def login(user: LoginRequest):
     try:
         cursor.execute("SELECT password_hash FROM users WHERE username = %s", (user.username,))
         result = cursor.fetchone()
-        if not result:
+        if not result or not bcrypt_context.verify(user.password, result[0]):
             raise HTTPException(status_code=401, detail="Invalid username or password")
         
-        stored_password_hash = result[0]
-        if not bcrypt_context.verify(user.password, stored_password_hash):
-            raise HTTPException(status_code=401, detail="Invalid username or password")
-        
-        access_token = create_access_token(user.username, expires_delta=timedelta(minutes=TOKEN_EXPIRE_MINUTES))
+        access_token = create_access_token(user.username)
         return {"access_token": access_token, "token_type": "bearer"}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error during login: {e}")
     finally:
         cursor.close()
         conn.close()
 
-@router.post("/signup", response_model=Token)
+
+@router.post("/signup")
 def signup(user: CreateUserRequest):
     conn, cursor = get_db_connection()
     create_user_table(cursor)
-    password_hash = hash_password(user.password) 
+    password_hash = hash_password(user.password)
     try:
         insert_user(cursor, user.username, password_hash, user.email)
         conn.commit()
@@ -90,6 +111,20 @@ def signup(user: CreateUserRequest):
     finally:
         cursor.close()
         conn.close()
+
+
+@router.post("/logout")
+async def logout(token: Annotated[str, Depends(oauth2_bearer)]):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        expires_at = datetime.fromtimestamp(payload.get("exp"))
+        
+        blacklist_token(token, expires_at)
+        
+        return JSONResponse(content={"message": "Successfully logged out"}, status_code=200)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Logout failed")
+
 
 @router.put("/change_password/{username}")
 def change_password(username: str, new_password: str):
