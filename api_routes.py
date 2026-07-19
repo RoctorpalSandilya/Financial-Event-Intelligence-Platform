@@ -1,5 +1,5 @@
 from fastapi import Depends, FastAPI, HTTPException
-from langchain_protocol import Annotated
+from typing import Annotated
 from ML_results import predict_new_article, prepare_features_for_new_article
 import auth
 from auth import get_current_user
